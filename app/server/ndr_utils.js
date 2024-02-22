@@ -1,9 +1,9 @@
-const {httpClient} = require('server-infra/remote/httpReq')
+const { httpServer } = require('server-infra/remote/httpReq')
+const { userHeaders } = require('server-infra/expressExt/user')
 const ndrConfig = require(`../shared/properties.json`)
-console.log("NDR Config: ", ndrConfig)
 const ckregexp = new RegExp('([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}')
-const vgalbff = httpClient(ndrConfig.vgalBff.url, {}, { parser: JSON.parse, strictSSL: false });
-const vgal = httpClient(`${ndrConfig.vgal.base}/${ndrConfig.vgal.modules.abstraction}`, {}, { parser: JSON.parse, strictSSL: false });
+const vgalbff = httpServer(ndrConfig.vgalBff.url, {}, { parser: JSON.parse, strictSSL: false });
+const vgal = httpServer(`${ndrConfig.vgal.base}/${ndrConfig.vgal.modules.abstraction}`, {}, { parser: JSON.parse, strictSSL: false });
 
 
 exports.getSensor = async (req, res) => {
@@ -35,7 +35,6 @@ exports.getSensor = async (req, res) => {
     // add the fields from vgal
     req.sensor.snxIp = vgalResp.snxIp
     req.sensor.adminPassword = vgalResp.adminPassword
-    console.log('req.sensor', req.sensor);
     return req.sensor
 
   }

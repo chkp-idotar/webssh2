@@ -22,6 +22,7 @@ const appSocket = require('./socket');
 const { setDefaultCredentials, basicAuth } = require('./util');
 const { webssh2debug } = require('./logging');
 const { reauth, connect, notfound, handleErrors } = require('./routes');
+const authMW = require('server-infra/expressExt/authMW')
 
 setDefaultCredentials(config.user);
 
@@ -47,15 +48,27 @@ app.post('/ssh/host/:host?', connect);
 app.post('/ssh', express.static(publicPath, config.express.ssh));
 app.use('/ssh', express.static(publicPath, config.express.ssh));
 
-app.use('/ssh/gwck/:gwck?', async (req, res, next) => {
-  let gw = await getSensor(req, res);
+
+const websshProp = {
+  audit: true,
+  constrainsName: 'webuiaccess',
+  getObject: getSensor,
+  authorizer: {
+      object: { name: 'websshGateway' },
+      getDomains: obj => { return [ obj.domainName ] },
+  }
+}
+
+app.use('/ssh/gwck/:gwck?', authMW.get(websshProp), async (req, res, next) => {
+  let gw = req.sensor;
   req.session.host = gw.snxIp;
   req.session.username = "admin";
   req.session.userpassword = gw.adminPassword;
   next();
 }, connect);
 
-app.use(basicAuth);
+
+//app.use(basicAuth);
 app.get('/ssh/reauth', reauth);
 //app.get('/ssh/host/:host?', connect);
 
