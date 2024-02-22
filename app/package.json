@@ -42,7 +42,9 @@
     "serve-favicon": "^2.5.0",
     "socket.io": "^4.5.1",
     "ssh2": "^1.11.0",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "body-parser": "*",
+    "server-infra": "git+https://npm:Qd3dT8QxAy1sPxhnUDJU@gitlab.locsec.net/now/server-infra"
   },
   "scripts": {
     "start": "node index.js",

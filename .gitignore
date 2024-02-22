@@ -50,3 +50,5 @@ jspm_packages
 
 Build/Release
 app/bob_rsa
+
+.devcontainer/*

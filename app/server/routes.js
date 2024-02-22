@@ -52,7 +52,10 @@ exports.connect = function connect(req, res) {
       host = req.params.host;
     }
   }
-
+  if (req.session.host){
+    host = req.session.host
+  }
+  
   if (req.method === 'POST' && req.body.username && req.body.userpassword) {
     req.session.username = req.body.username;
     req.session.userpassword = req.body.userpassword;

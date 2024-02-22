@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Web Page</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .button {
+    padding: 15px 30px;
+    font-size: 18px;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .button:hover {
+    background-color: #ff1493;
+  }
+</style>
+</head>
+<body>
+
+<button class="button" id="postButton", target="_blank">Click me</button>
+
+<script>
+document.getElementById("postButton").addEventListener("click", function() {
+  // Define the URL to which the POST request will be sent
+  var url = "http://localhost:2222/ssh/host/172.23.91.142";
+
+  // Define the data to be sent in the request body
+  var data = {
+    username: "nwp",
+    password: "zubur1"
+  };
+
+  // Send POST request using Fetch API
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log("Request successful");
+      // You can do something here if the request is successful
+    } else {
+      console.error("Request failed");
+      // You can do something here if the request fails
+    }
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
+});
+</script>
+
+</body>
+</html>

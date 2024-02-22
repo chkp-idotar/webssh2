@@ -1,0 +1,6 @@
+{
+    ".source": ["../globals.json"],
+    "vgalBff": {
+      "url": "https://10.0.30.239/vgald"
+    }
+}
