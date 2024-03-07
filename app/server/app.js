@@ -17,16 +17,19 @@ const server = require('http').Server(app);
 const favicon = require('serve-favicon');
 const io = require('socket.io')(server, config.socketio);
 const session = require('express-session')(config.express);
-const {getSensor} = require('./ndr_utils')
 const appSocket = require('./socket');
 const { setDefaultCredentials, basicAuth } = require('./util');
 const { webssh2debug } = require('./logging');
 const { reauth, connect, notfound, handleErrors } = require('./routes');
-const authMW = require('server-infra/expressExt/authMW')
+const {getSensor} = require('./ndr_utils');
+const authMW = require('server-infra/expressExt/authMW');
 
 setDefaultCredentials(config.user);
 
+
 // safe shutdown
+
+
 let remainingSeconds = config.safeShutdownDuration;
 let shutdownMode = false;
 let shutdownInterval;
@@ -44,14 +47,14 @@ if (config.accesslog) app.use(logger('common'));
 app.disable('x-powered-by');
 app.use(favicon(path.join(publicPath, 'favicon.ico')));
 app.use(express.urlencoded({ extended: true }));
-app.post('/ssh/host/:host?', connect);
-app.post('/ssh', express.static(publicPath, config.express.ssh));
-app.use('/ssh', express.static(publicPath, config.express.ssh));
+//app.post('/ssh/host/:host?', connect);
+//app.post('/ssh', express.static(publicPath, config.express.ssh));
+//app.use('/ssh', express.static(publicPath, config.express.ssh));
 
 
 const websshProp = {
   audit: true,
-  constrainsName: 'webuiaccess',
+  constrainsName: 'websshGateway',
   getObject: getSensor,
   authorizer: {
       object: { name: 'websshGateway' },
@@ -61,7 +64,7 @@ const websshProp = {
 
 app.use('/ssh/gwck/:gwck?', authMW.get(websshProp), async (req, res, next) => {
   let gw = req.sensor;
-  req.session.host = gw.snxIp;
+  req.session.host = gw.snxIp;  
   req.session.username = "admin";
   req.session.userpassword = gw.adminPassword;
   next();
@@ -72,8 +75,18 @@ app.use('/ssh/gwck/:gwck?', authMW.get(websshProp), async (req, res, next) => {
 app.get('/ssh/reauth', reauth);
 //app.get('/ssh/host/:host?', connect);
 
+app.use(function (err, req, res, next) {
+  console.log(`Error handler: ${err.stack}\n`, 'error');
+  const newLocal = 400;
+  let status = Number.isInteger(err.status) ? err.status : newLocal;
+  let resBody = err.body ? err.body : { status: "error", type: "general", module:"webssh", message: err.message }
+  res.status(status).json(resBody);
+  next()
+})
+
 app.use(notfound);
 app.use(handleErrors);
+
 
 // clean stop
 function stopApp(reason) {

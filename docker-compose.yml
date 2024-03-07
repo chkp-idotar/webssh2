@@ -2,12 +2,12 @@ version: '3'
 services:
   start:
     image: webssh
-    container_name: webssh
+    name: webssh
     volumes:
-      - ./shared/app.js:/usr/src/server/app.js
-      - ./shared/routes.js:/usr/src/server/routes.js
       - ./shared/properties.json:/usr/src/shared/properties.json
+      - ./shared/userAuthorizationScheme.json:/usr/src/shared/userAuthorizationScheme.json
       - ../globals.json:/usr/src/globals.json
     restart: unless-stopped
     ports:
       - "2222:2222"
+    net: host
