@@ -52,3 +52,4 @@ Build/Release
 app/bob_rsa
 
 .devcontainer/*
+webssh.tar

@@ -48,8 +48,8 @@ app.disable('x-powered-by');
 app.use(favicon(path.join(publicPath, 'favicon.ico')));
 app.use(express.urlencoded({ extended: true }));
 //app.post('/ssh/host/:host?', connect);
-//app.post('/ssh', express.static(publicPath, config.express.ssh));
-//app.use('/ssh', express.static(publicPath, config.express.ssh));
+app.post('/ssh', express.static(publicPath, config.express.ssh));
+app.use('/ssh', express.static(publicPath, config.express.ssh));
 
 
 const websshProp = {
@@ -79,8 +79,10 @@ app.use(function (err, req, res, next) {
   console.log(`Error handler: ${err.stack}\n`, 'error');
   const newLocal = 400;
   let status = Number.isInteger(err.status) ? err.status : newLocal;
-  let resBody = err.body ? err.body : { status: "error", type: "general", module:"webssh", message: err.message }
-  res.status(status).json(resBody);
+  let error = err.body ? err.body : { status: "error", type: "general", module:"webssh", message: err.message }
+  console.log(`Error status ${status}: ${error.message} \n`)
+  let resBody = { status: "error", type: "general", module:"webssh", message: "Connection not allowed" }
+  res.status(400).json(resBody);
   next()
 })
 
