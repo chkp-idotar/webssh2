@@ -1,6 +1,6 @@
 #! /bin/bash
 
-docker build -t webssh -f Dockerfile .
+docker build -t webssh -f Dockerfile ../
 
 docker save -o webssh.tar webssh
 
