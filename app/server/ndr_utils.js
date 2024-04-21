@@ -1,7 +1,8 @@
-const { httpServer } = require('server-infra/remote/httpReq')
-const { userHeaders } = require('server-infra/expressExt/user')
-const ndrConfig = require(`../shared/properties.json`)
-const ckregexp = new RegExp('([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}')
+const { httpServer } = require('server-infra/remote/httpReq');
+const { userHeaders } = require('server-infra/expressExt/user');
+const { HttpError } = require('server-infra/utils/debug');
+const ndrConfig = require(`../shared/properties.json`);
+const ckregexp = new RegExp('([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}');
 const vgalbff = httpServer(ndrConfig.vgalBff.url, {}, { parser: JSON.parse, strictSSL: false });
 const vgal = httpServer(`${ndrConfig.vgal.base}/${ndrConfig.vgal.modules.abstraction}`, {}, { parser: JSON.parse, strictSSL: false });
 
@@ -9,7 +10,7 @@ const vgal = httpServer(`${ndrConfig.vgal.base}/${ndrConfig.vgal.modules.abstrac
 exports.getSensor = async (req, res) => {
     let gwck = req.params.gwck;
     if (!ckregexp.test(gwck)) {
-      res.status(400).send('Invlid value for gw ck parameter');
+      throw new HttpError(400, 'Invlid value for gw ck parameter');
     }
     
     // Ask for the gateway ck from vgal bff

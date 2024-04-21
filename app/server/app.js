@@ -72,22 +72,25 @@ app.use('/ssh/gwck/:gwck?', authMW.get(websshProp), async (req, res, next) => {
 
 
 //app.use(basicAuth);
-app.get('/ssh/reauth', reauth);
+//app.get('/ssh/reauth', reauth);
 //app.get('/ssh/host/:host?', connect);
 
 app.use(function (err, req, res, next) {
-  console.log(`Error handler: ${err.stack}\n`, 'error');
-  const newLocal = 400;
+  let newLocal = 400;
   let status = Number.isInteger(err.status) ? err.status : newLocal;
-  let error = err.body ? err.body : { status: "error", type: "general", module:"webssh", message: err.message }
-  console.log(`Error status ${status}: ${error.message} \n`)
-  let resBody = { status: "error", type: "general", module:"webssh", message: "Connection not allowed" }
-  res.status(400).json(resBody);
-  next()
+  let resBody = err.body ? err.body : { status: "error", type: "general", module:"webssh", message: err.message };
+  
+  if ((err.status === 404 || err.status === 403)) {
+    resBody ={ status: "error", type: "general", module:"webssh", message: "Connection not allowed"};
+    status = 401
+  }
+
+  console.error(`Error ${status}: ${err.message}`);
+  return res.status(status).json(resBody);
 })
 
-app.use(notfound);
-app.use(handleErrors);
+//app.use(notfound);
+//app.use(handleErrors);
 
 
 // clean stop

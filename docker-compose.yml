@@ -5,8 +5,10 @@ services:
     name: webssh
     volumes:
       - ./shared/properties.json:/usr/src/shared/properties.json
+      - ./shared/config.json:/usr/src/config.json
       - ./shared/userAuthorizationScheme.json:/usr/src/shared/userAuthorizationScheme.json
       - ../globals.json:/usr/src/globals.json
+      - ./logs/:/app/logs/
     restart: unless-stopped
     ports:
       - "2222:2222"
