@@ -1,6 +1,6 @@
 {
-  "name": "webssh2",
-  "version": "0.5.0-pre-5",
+  "name": "@chkp/webssh2",
+  "version": "1.0.0",
   "ignore": [
     ".gitignore"
   ],
@@ -44,7 +44,7 @@
     "ssh2": "^1.11.0",
     "validator": "^13.7.0",
     "body-parser": "*",
-    "server-infra": "git+https://npm:Qd3dT8QxAy1sPxhnUDJU@gitlab.locsec.net/now/server-infra"
+    "@chkp/server-infra": "^3.5.1"
   },
   "scripts": {
     "start": "node index.js",
